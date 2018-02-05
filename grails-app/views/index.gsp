@@ -76,6 +76,7 @@
         </div>
     </section>
 </div>
+
 <div id="footer">
     <g:render template="/common/footer"/>
 
