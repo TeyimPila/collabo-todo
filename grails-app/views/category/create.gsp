@@ -27,7 +27,7 @@
             </g:hasErrors>
             <g:form resource="${this.category}" method="POST">
                 <fieldset class="form">
-                    <f:all bean="category"/>
+                    <f:all bean="category" except="user, todos"/>
                 </fieldset>
                 <fieldset class="buttons">
                     <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />

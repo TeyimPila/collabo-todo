@@ -10,8 +10,11 @@ class CategoryController {
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
     def index(Integer max) {
+        def user = User.get(session.user.id)
+
         params.max = Math.min(max ?: 10, 100)
-        respond categoryService.list(params), model:[categoryCount: categoryService.count()]
+
+        respond Category.findAllByUser(user, params), model: [categoryCount: categoryService.count()]
     }
 
     def show(Long id) {
@@ -28,10 +31,12 @@ class CategoryController {
             return
         }
 
+        category.user = session.user
+
         try {
             categoryService.save(category)
         } catch (ValidationException e) {
-            respond category.errors, view:'create'
+            respond category.errors, view: 'create'
             return
         }
 
@@ -45,6 +50,11 @@ class CategoryController {
     }
 
     def edit(Long id) {
+        if (session.user.id != Category.get(id).user.id) {
+            flash.message = "You can only edit your own categories"
+            respond category.errors, view: 'edit'
+            return
+        }
         respond categoryService.get(id)
     }
 
@@ -54,10 +64,17 @@ class CategoryController {
             return
         }
 
+        if (session.user.id != category.user.id) {
+            flash.message = "You can only update your own categories"
+            respond category.errors, view: 'edit'
+            return
+        }
+
         try {
+            category.user = session.user
             categoryService.save(category)
         } catch (ValidationException e) {
-            respond category.errors, view:'edit'
+            respond category.errors, view: 'edit'
             return
         }
 
@@ -66,7 +83,7 @@ class CategoryController {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'category.label', default: 'Category'), category.id])
                 redirect category
             }
-            '*'{ respond category, [status: OK] }
+            '*' { respond category, [status: OK] }
         }
     }
 
@@ -76,14 +93,20 @@ class CategoryController {
             return
         }
 
+        if (session.user.id != Category.get(id).user.id) {
+            flash.message = "You can only delete your own categories"
+            respond category.errors, view: 'edit'
+            return
+        }
+
         categoryService.delete(id)
 
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'category.label', default: 'Category'), id])
-                redirect action:"index", method:"GET"
+                redirect action: "index", method: "GET"
             }
-            '*'{ render status: NO_CONTENT }
+            '*' { render status: NO_CONTENT }
         }
     }
 
@@ -93,7 +116,7 @@ class CategoryController {
                 flash.message = message(code: 'default.not.found.message', args: [message(code: 'category.label', default: 'Category'), params.id])
                 redirect action: "index", method: "GET"
             }
-            '*'{ render status: NOT_FOUND }
+            '*' { render status: NOT_FOUND }
         }
     }
 }
