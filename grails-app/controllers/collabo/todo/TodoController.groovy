@@ -11,7 +11,7 @@ class TodoController {
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond todoService.list(params), model:[todoCount: todoService.count()]
+        respond todoService.list(params), model: [todoCount: todoService.count()]
     }
 
     def show(Long id) {
@@ -31,9 +31,12 @@ class TodoController {
         try {
             todoService.save(todo)
         } catch (ValidationException e) {
-            respond todo.errors, view:'create'
+            respond todo.errors, view: 'create'
             return
         }
+
+
+
 
         request.withFormat {
             form multipartForm {
@@ -70,7 +73,7 @@ class TodoController {
         try {
             todoService.save(todo)
         } catch (ValidationException e) {
-            respond todo.errors, view:'edit'
+            respond todo.errors, view: 'edit'
             return
         }
 
@@ -79,7 +82,7 @@ class TodoController {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'todo.label', default: 'Todo'), todo.id])
                 redirect todo
             }
-            '*'{ respond todo, [status: OK] }
+            '*' { respond todo, [status: OK] }
         }
     }
 
@@ -100,9 +103,9 @@ class TodoController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.deleted.message', args: [message(code: 'todo.label', default: 'Todo'), id])
-                redirect action:"index", method:"GET"
+                redirect action: "index", method: "GET"
             }
-            '*'{ render status: NO_CONTENT }
+            '*' { render status: NO_CONTENT }
         }
     }
 
@@ -112,7 +115,11 @@ class TodoController {
                 flash.message = message(code: 'default.not.found.message', args: [message(code: 'todo.label', default: 'Todo'), params.id])
                 redirect action: "index", method: "GET"
             }
-            '*'{ render status: NOT_FOUND }
+            '*' { render status: NOT_FOUND }
         }
+    }
+
+    def beforeInterceptor = {
+        println("${session?.user?.userName} Start action ${controllerName} Controller.${actionName}() : parameters $params")
     }
 }
