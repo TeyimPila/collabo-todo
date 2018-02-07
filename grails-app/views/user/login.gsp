@@ -7,10 +7,9 @@
 
 <body>
 <div class="body">
-    ${flash.message}
     <g:if test="${flash.message}">
         <div class="message">
-            ${flash.message}
+            <g:message code="${flash.message}" args="${flash.args}" default="${flash.defaultMsg}"/>
         </div>
     </g:if>
     <p>

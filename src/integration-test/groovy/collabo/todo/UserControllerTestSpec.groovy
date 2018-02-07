@@ -1,13 +1,9 @@
 package collabo.todo
 
-import grails.testing.mixin.integration.Integration
-import grails.transaction.*
-
-
 class UserControllerTestSpec extends GroovyTestCase {
 
     User user
-    UserController controller
+    backup controller
 
 
     void setUp() {
@@ -15,7 +11,7 @@ class UserControllerTestSpec extends GroovyTestCase {
         user.save()
 
 
-        controller = new UserController()
+        controller = new backup()
     }
 
     void tearDown() {
