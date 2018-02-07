@@ -45,12 +45,25 @@ class TodoController {
     }
 
     def edit(Long id) {
+
+        if (session.user.id != Todo.get(id).owner.id) {
+            flash.message = "You can only edit your own todos"
+            redirect action: 'index'
+            return
+        }
+
         respond todoService.get(id)
     }
 
     def update(Todo todo) {
         if (todo == null) {
             notFound()
+            return
+        }
+
+        if (session.user.id != todo.owner.id) {
+            flash.message = "You can only update your own todos"
+            redirect action: 'index'
             return
         }
 
@@ -73,6 +86,12 @@ class TodoController {
     def delete(Long id) {
         if (id == null) {
             notFound()
+            return
+        }
+
+        if (session.user.id != Todo.get(id).owner.id) {
+            flash.message = "You can only delete your own todos"
+            redirect action: 'index'
             return
         }
 

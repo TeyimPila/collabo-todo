@@ -52,7 +52,7 @@ class CategoryController {
     def edit(Long id) {
         if (session.user.id != Category.get(id).user.id) {
             flash.message = "You can only edit your own categories"
-            respond category.errors, view: 'edit'
+            redirect action: 'index'
             return
         }
         respond categoryService.get(id)
@@ -66,7 +66,7 @@ class CategoryController {
 
         if (session.user.id != category.user.id) {
             flash.message = "You can only update your own categories"
-            respond category.errors, view: 'edit'
+            redirect action: 'index'
             return
         }
 
@@ -95,7 +95,7 @@ class CategoryController {
 
         if (session.user.id != Category.get(id).user.id) {
             flash.message = "You can only delete your own categories"
-            respond category.errors, view: 'edit'
+            redirect action: 'index'
             return
         }
 
