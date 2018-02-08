@@ -9,7 +9,6 @@ class Category {
     static belongsTo = User
     static hasMany = [todos: Todo]
 
-
     static constraints = {
         name(blank: false)
     }

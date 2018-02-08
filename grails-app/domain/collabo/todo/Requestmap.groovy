@@ -2,6 +2,11 @@ package collabo.todo
 
 class Requestmap {
 
-    static constraints = {
+    String url
+    String configAttribute
+
+    static def constraints = {
+        url(blank: false, unique: true)
+        configAttribute(blank: false)
     }
 }
