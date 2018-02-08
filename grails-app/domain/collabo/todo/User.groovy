@@ -10,15 +10,12 @@ class User {
     boolean active = true
     String confirmPassword
 
-    Address address = new Address()
-
-
     static transients = ["confirmPassword"]
 
-    static hasMany = [buddyLists: BuddyList, todos: Todo, categories: Category, authorities: Authority]
+    static hasMany = [address: Address, buddyLists: BuddyList, todos: Todo, categories: Category, authorities: Authority]
     static belongsTo = Authority
 
-    static embedded = ['address']
+//    static hasOne = Address
 
     static constraints = {
         userName(blank: false, unique: true)
@@ -42,21 +39,3 @@ class User {
 
 }
 
-class Address {
-
-    String addressLine1
-    String addressLine2
-    String city
-    String state
-    String zipCode
-    String country
-
-    static constraints = {
-        addressLine1(nullable: true)
-        addressLine2(nullable: true)
-        city(nullable: true)
-        state(nullable: true)
-        zipCode(nullable: true)
-        country(nullable: true)
-    }
-}

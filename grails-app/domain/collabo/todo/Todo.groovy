@@ -22,6 +22,7 @@ class Todo {
      * Defines Relationships
      */
     static belongsTo = [User, Category]
+    static hasMany = [keywords: Keyword]
 
 
     static constraints = {
@@ -34,6 +35,13 @@ class Todo {
         dueDate(nullable: true)
         associatedFile(nullable:true)
     }
+
+
+        static mapping = {
+            id generator:'uuid'
+        }
+
+
 
     String toString() {
         name
