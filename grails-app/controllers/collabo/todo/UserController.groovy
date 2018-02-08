@@ -19,7 +19,7 @@ class UserController {
          * This allows the request to specify the response type as
          * a query string parameter: http://localhost:8080/user/index?format=json
          */
-        request.withFormat {
+        withFormat {
             html {respond users, model: [userCount: userService.count()]}
             json { respond users, model: [userCount: userService.count()] as JSON }
             xml { render users as XML}
