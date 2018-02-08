@@ -35,9 +35,6 @@ class TodoController {
             return
         }
 
-
-
-
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'todo.label', default: 'Todo'), todo.id])
@@ -48,25 +45,12 @@ class TodoController {
     }
 
     def edit(Long id) {
-
-        if (session.user.id != Todo.get(id).owner.id) {
-            flash.message = "You can only edit your own todos"
-            redirect action: 'index'
-            return
-        }
-
         respond todoService.get(id)
     }
 
     def update(Todo todo) {
         if (todo == null) {
             notFound()
-            return
-        }
-
-        if (session.user.id != todo.owner.id) {
-            flash.message = "You can only update your own todos"
-            redirect action: 'index'
             return
         }
 
@@ -92,12 +76,6 @@ class TodoController {
             return
         }
 
-        if (session.user.id != Todo.get(id).owner.id) {
-            flash.message = "You can only delete your own todos"
-            redirect action: 'index'
-            return
-        }
-
         todoService.delete(id)
 
         request.withFormat {
@@ -119,7 +97,4 @@ class TodoController {
         }
     }
 
-    def beforeInterceptor = {
-        println("${session?.user?.userName} Start action ${controllerName} Controller.${actionName}() : parameters $params")
-    }
 }

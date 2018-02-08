@@ -1,5 +1,7 @@
 package collabo.todo
 
+import grails.converters.JSON
+import grails.converters.XML
 import grails.validation.ValidationException
 import static org.springframework.http.HttpStatus.*
 
@@ -11,7 +13,17 @@ class UserController {
 
     def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
-        respond userService.list(params), model: [userCount: userService.count()]
+        def users = userService.list(params)
+
+        /**
+         * This allows the request to specify the response type as
+         * a query string parameter: http://localhost:8080/user/index?format=json
+         */
+        request.withFormat {
+            html {respond users, model: [userCount: userService.count()]}
+            json { respond users, model: [userCount: userService.count()] as JSON }
+            xml { render users as XML}
+        }
     }
 
     def show(Long id) {
@@ -45,12 +57,6 @@ class UserController {
     }
 
     def edit(Long id) {
-
-        if (session.user.id != id) {
-            flash.message = "You can only edit yourself"
-            redirect(action: 'index')
-            return
-        }
 
         def user = userService.get(id)
 
