@@ -2,6 +2,8 @@ package collabo.todo
 
 class Todo {
 
+    static searchable = true
+
     String name
     String note
     Date createdDate
@@ -9,6 +11,10 @@ class Todo {
     Date completedDate
     String priority
     String status
+    byte[] associatedFile
+    String fileName
+    String contentType
+
     User owner
     Category category
 
