@@ -2,13 +2,13 @@ package collabo.todo
 
 class Authority {
 
-    static hasMany=[people:User]
+    static hasMany = [people: User]
 
     String description
-    String authority="ROLE_"
+    String authority = "ROLE_"
 
     static def constraints = {
-        authority(blank:false)
+        authority(blank: false)
         description()
     }
 }

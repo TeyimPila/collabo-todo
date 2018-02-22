@@ -14,6 +14,6 @@ class Category {
     }
 
     String toString() {
-        name
+        return "$name - $description"
     }
 }
