@@ -11,8 +11,34 @@ class TodoSpec extends Specification implements DomainUnitTest<User> {
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-        false == false
+
+    void "Test the Todo domain custom validation"() {
+        when:
+        def todo = new Todo(
+                owner: new User(),
+                name: "Validation Test",
+                note: "Detailed web app description",
+                createdDate: new Date(),
+                dueDate: new Date(),
+                lastModifiedDate: new Date(),
+                priority: '1',
+                status: '1'
+        )
+
+        then:
+        todo.validate()
+
+        when:
+        todo.completedDate = new Date() - 1
+        todo.name = null
+
+        then:
+        !todo.validate()
+
+        when:
+        todo.completedDate = new Date() + 3
+
+        then:
+        todo.validate()
     }
 }

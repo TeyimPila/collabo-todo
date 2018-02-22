@@ -7,6 +7,7 @@ class Todo {
     String name
     String note
     Date createdDate
+    Date startDate
     Date dueDate
     Date completedDate
     Date lastModifiedDate
@@ -16,7 +17,7 @@ class Todo {
     String fileName
     String contentType
 
-    User owner
+    User ownedBy
     Category category
 
     /**
@@ -27,15 +28,29 @@ class Todo {
 
 
     static constraints = {
+        ownedBy(nullable: false)
         name(blank: false)
         createdDate()
         lastModifiedDate()
         priority()
         status()
         note(maxSize: 1000, nullable: true)
-        completedDate(nullable: true)
         dueDate(nullable: true)
         associatedFile(nullable: true)
+        completedDate(nullable: true,
+                validator: { val, obj ->
+                    if (val != null) {
+                        return val.after(obj.createdDate)
+                    }
+                    return true
+                })
+        startDate(nullable: true,
+                validator: {
+                    if (it?.compareTo(new Date()) < 0) {
+                        return false
+                    }
+                    return true
+                })
     }
 
 

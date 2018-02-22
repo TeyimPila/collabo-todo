@@ -5,7 +5,7 @@ import grails.testing.web.controllers.ControllerUnitTest
 import grails.validation.ValidationException
 import spock.lang.*
 
-class UserControllerSpec extends Specification implements ControllerUnitTest<backup>, DomainUnitTest<User> {
+class UserControllerSpec extends Specification {
 
     def populateValidParams(params) {
         assert params != null
