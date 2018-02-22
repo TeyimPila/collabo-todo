@@ -32,7 +32,7 @@ class Todo {
         name(blank: false)
         createdDate()
         lastModifiedDate()
-        priority()
+        priority(blank: false)
         status()
         note(maxSize: 1000, nullable: true)
         dueDate(nullable: true)
