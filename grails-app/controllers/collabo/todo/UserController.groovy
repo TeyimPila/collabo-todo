@@ -3,6 +3,8 @@ package collabo.todo
 import grails.converters.JSON
 import grails.converters.XML
 import grails.validation.ValidationException
+import org.springframework.validation.BindingResult
+
 import static org.springframework.http.HttpStatus.*
 
 class UserController {
@@ -20,9 +22,9 @@ class UserController {
          * a query string parameter: http://localhost:8080/user/index?format=json
          */
         withFormat {
-            html {respond users, model: [userCount: userService.count()]}
+            html { respond users, model: [userCount: userService.count()] }
             json { respond users, model: [userCount: userService.count()] as JSON }
-            xml { render users as XML}
+            xml { render users as XML }
         }
     }
 
@@ -120,6 +122,9 @@ class UserController {
     def login() {
     }
 
+    def register() {
+    }
+
     def handleLogin() {
         def user = User.findByUserName(params.userName)
         if (!user) {
@@ -142,5 +147,37 @@ class UserController {
         }
     }
 
+    def handleRegistration = {
+        def user = new User()
+        log.info("HANDLE REGISTRATION")
+        // Process the captcha request
+        def captchaText = session.captcha
+        session.captcha = null
+        if (params.captcha.toUpperCase() == captchaText) {
+            if (params.password != params.confirm) {
+                flash.message = "The two passwords you entered don't match!"
+                redirect(action: register)
+            } else {
+                log.info "before save"
+                // Let's hash the password
+                user.properties = params as BindingResult
+                println(user.dump())
+                if (user.save()) {
+                    log.info "saved redirecting to user controller"
+                    // Let's log them in
+                    session.user = user
+                    redirect(controller: 'todo')
+                } else {
+                    log.info "didn't save"
+                    flash.user = user
+                    redirect(action: register)
+                }
+            }
+        } else {
+            log.info "Captcha Not Filled In"
+            flash.message = "Access code did not match."
+            redirect(controller: 'user')
+        }
+    }
 
 }
